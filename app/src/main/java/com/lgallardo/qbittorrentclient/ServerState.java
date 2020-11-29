@@ -43,7 +43,7 @@ public class ServerState {
     private boolean queueing;
     @SerializedName("read_cache_hits")
     @Expose
-    private int read_cache_hits;
+    private double read_cache_hits;
     @SerializedName("read_cache_overload")
     @Expose
     private int read_cache_overload;
@@ -206,7 +206,7 @@ public class ServerState {
         this.queueing = queueing;
     }
 
-    public int getRead_cache_hits() {
+    public double getRead_cache_hits() {
         return read_cache_hits;
     }
 

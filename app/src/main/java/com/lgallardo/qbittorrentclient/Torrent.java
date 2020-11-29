@@ -45,7 +45,7 @@ class Torrent {
     private double downloaded;
     @SerializedName("downloaded_session")
     @Expose
-    private int downloaded_session;
+    private double downloaded_session;
     @SerializedName("eta")
     @Expose
     private long eta;
@@ -129,7 +129,7 @@ class Torrent {
     private double uploaded;
     @SerializedName("uploaded_session")
     @Expose
-    private int uploaded_session;
+    private double uploaded_session;
     @SerializedName("upspeed")
     @Expose
     private int upspeed;
@@ -517,7 +517,7 @@ class Torrent {
         this.downloaded = downloaded;
     }
 
-    public int getDownloaded_session() {
+    public double getDownloaded_session() {
         return downloaded_session;
     }
 
@@ -717,7 +717,7 @@ class Torrent {
         this.uploaded = uploaded;
     }
 
-    public int getUploaded_session() {
+    public double getUploaded_session() {
         return uploaded_session;
     }
 
