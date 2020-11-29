@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:background="?dropShadowBackground"
             android:elevation="1dp"
-            android:gravity="end"
+            android:gravity="center"
             android:orientation="horizontal"
             android:paddingBottom="2dp"
             android:paddingRight="5dp"
