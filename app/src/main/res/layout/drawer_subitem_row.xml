@@ -7,12 +7,13 @@
   ~
   -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_server_row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#434343"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:padding="10dp" >
+    android:minHeight="@dimen/draweritemheight"
+    android:padding="@dimen/drawerpadding">
  
     <ImageView
         android:id="@+id/imageViewIcon"
@@ -21,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:paddingRight="10dp" />
+        android:paddingRight="@dimen/drawerpadding" />
  
     <TextView
         android:id="@+id/textViewName"
@@ -29,8 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/imageViewIcon"
-        android:paddingRight="10dp"
-        android:text="Example"
+        android:paddingRight="@dimen/drawerpadding"
+        tools:text="Example"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:textColor="@color/Theme_Dark_accent" />
  

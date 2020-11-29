@@ -10,9 +10,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/primary_dark"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:minHeight="@dimen/draweritemheight"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="@dimen/drawerpadding">
 
 
     <LinearLayout
@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/icon"
-            android:paddingRight="10dp"
+            android:paddingRight="@dimen/drawerpadding"
             android:src="@drawable/ic_drawer_servers" />
 
         <TextView
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/imageViewIcon"
             android:layout_weight="2"
-            android:paddingRight="10dp"
+            android:paddingRight="@dimen/drawerpadding"
             android:text="Example"
             android:textAppearance="?android:attr/textAppearanceListItemSmall"
             android:textColor="#ffffff"
@@ -42,14 +42,14 @@
 
         <TextView
             android:id="@+id/textViewDrawerArrow"
-            android:layout_width="1dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center|right"
             android:layout_toRightOf="@+id/imageViewIcon"
-            android:layout_weight="1"
             android:gravity="right"
-            android:paddingRight="10dp"
+            android:paddingRight="@dimen/drawerpadding"
+            android:paddingLeft="@dimen/drawerpadding"
             android:text="▼"
             android:textAppearance="?android:attr/textAppearanceListItemSmall"
             android:textColor="#ffffff" />
