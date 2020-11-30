@@ -10,9 +10,9 @@
     android:id="@+id/drawer_server_active_row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#434343"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:padding="10dp">
+    android:background="?attr/selectableItemBackground"
+    android:minHeight="@dimen/draweritemheight"
+    android:padding="@dimen/drawerpadding">
 
     <ImageView
         android:id="@+id/imageViewIcon"
@@ -21,7 +21,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:contentDescription="@string/icon"
-        android:paddingRight="10dp" />
+        android:paddingRight="@dimen/drawerpadding" />
 
     <TextView
         android:id="@+id/textViewName"
@@ -29,10 +29,9 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/imageViewIcon"
-        android:paddingRight="10dp"
+        android:paddingRight="@dimen/drawerpadding"
         android:text="Example"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:textColor="#ffffff"
         android:textStyle="bold|italic"/>
 
 </RelativeLayout>

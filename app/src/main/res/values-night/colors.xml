@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#212121</color>
+    <color name="primary_dark">#1c313a</color>
+    <color name="primary_light">#718792</color>
+    <color name="accent">#9E9E9E</color>
+    <color name="primary_text">#CFD8DC</color>
+    <color name="secondary_text">#727272</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#B6B6B6</color>
+
+    <color name="Theme_Light_windowBackground">#ff434343</color>
+    <color name="Theme_Light_drawerBackground">#111</color>
+
+    <color name="background">@android:color/background_dark</color>
+</resources>

@@ -10,7 +10,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -19,8 +20,7 @@
         android:paddingLeft="8dp"
         android:paddingRight="10dp"
         android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:background="?backgroundSelector">
+        android:paddingBottom="5dp">
 
         <ImageView
             android:id="@+id/icon"

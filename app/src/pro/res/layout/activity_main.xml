@@ -15,7 +15,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?backgroundSelector"
+        android:background="?android:attr/colorBackground"
         android:orientation="vertical">
 
         <include
@@ -26,7 +26,7 @@
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?dropShadowBackground"
+            android:background="?android:attr/colorBackground"
             android:elevation="1dp"
             android:gravity="end"
             android:orientation="horizontal"
@@ -71,7 +71,7 @@
             android:id="@+id/header2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="?dropShadowBackground"
+            android:background="?android:attr/colorBackground"
             android:elevation="1dp"
             android:gravity="center"
             android:orientation="vertical">
@@ -93,7 +93,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="left"
 
-        android:background="#111"
+        android:background="?android:attr/colorBackground"
         android:scrollbars="vertical">
 
     </android.support.v7.widget.RecyclerView>

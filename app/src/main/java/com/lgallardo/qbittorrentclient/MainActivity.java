@@ -44,6 +44,7 @@
  import android.support.v4.widget.DrawerLayout;
  import android.support.v7.app.ActionBarDrawerToggle;
  import android.support.v7.app.AppCompatActivity;
+ import android.support.v7.app.AppCompatDelegate;
  import android.support.v7.widget.LinearLayoutManager;
  import android.support.v7.widget.RecyclerView;
  import android.support.v7.widget.SearchView;
@@ -404,6 +405,22 @@
 
          // Get preferences
          getSettings();
+         int theme;
+         switch(sharedPrefs.getString("theme","system")){
+             case "light":
+                 theme = AppCompatDelegate.MODE_NIGHT_NO;
+                 break;
+             case "dark":
+                 theme = AppCompatDelegate.MODE_NIGHT_YES;
+                break;
+             case "system":
+                 theme = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+                 break;
+             default:
+                 theme = AppCompatDelegate.MODE_NIGHT_AUTO;
+                 break;
+         }
+         AppCompatDelegate.setDefaultNightMode(theme);
 
 //        Log.d("Debug", "[onCreate] getSettings OK");
 
@@ -433,30 +450,9 @@
 //                    AlarmManager.INTERVAL_DAY, alarmIntent);
 //        }
 
-         // Set Theme (It must be fore inflating or setContentView)
-         if (dark_ui) {
-             this.setTheme(R.style.Theme_Dark);
-
-             if (Build.VERSION.SDK_INT >= 21) {
-                 getWindow().setNavigationBarColor(getResources().getColor(R.color.Theme_Dark_toolbarBackground));
-                 getWindow().setStatusBarColor(getResources().getColor(R.color.Theme_Dark_toolbarBackground));
-             }
-         } else {
-             this.setTheme(R.style.Theme_Light);
-
-             if (Build.VERSION.SDK_INT >= 21) {
-                 getWindow().setNavigationBarColor(getResources().getColor(R.color.primary));
-             }
-
-         }
-
          setContentView(R.layout.activity_main);
 
          toolbar = (Toolbar) findViewById(R.id.app_bar);
-
-         if (dark_ui) {
-             toolbar.setBackgroundColor(getResources().getColor(R.color.Theme_Dark_primary));
-         }
 
          setSupportActionBar(toolbar);
 
@@ -3768,7 +3764,7 @@
                  // Set uncategorized first
 
                  // Add category
-                 categoryItems.add(new DrawerItem(R.drawable.ic_drawer_categories, getResources().getString(R.string.drawer_category_categories), DRAWER_CATEGORIES, true, "categories"));
+                 categoryItems.add(new DrawerItem(R.drawable.ic_drawer_categories, getResources().getString(R.string.drawer_category_categories), DRAWER_CATEGORIES, true, "categories", "▲"));
 
                  // Add All
                  category = getResources().getString(R.string.drawer_category_all);
