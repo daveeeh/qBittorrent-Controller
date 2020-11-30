@@ -48,9 +48,6 @@ public class OptionsActivity extends PreferenceActivity implements SharedPrefere
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // Set Theme
-        this.setTheme(R.style.Theme_Light);
-
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.options);

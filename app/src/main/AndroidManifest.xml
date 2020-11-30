@@ -145,12 +145,10 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:theme="@style/Theme_Light" />
+            android:label="@string/title_activity_settings"/>
         <activity
             android:name=".OptionsActivity"
-            android:label="Options"
-            android:theme="@style/Theme_Light" />
+            android:label="Options"/>
         <activity android:name=".HelpActivity" />
         <activity android:name=".AboutActivity" >
             <intent-filter>

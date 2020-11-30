@@ -27,12 +27,15 @@ import android.preference.PreferenceActivity;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.Menu;
 
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
 import java.util.ArrayList;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 import java.util.regex.Pattern;
 
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -52,8 +55,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private EditTextPreference connection_timeout;
     private EditTextPreference data_timeout;
 
-    private CheckBoxPreference dark_ui;
-
     private CheckBoxPreference enable_notifications;
     private ListPreference notification_period;
 
@@ -72,12 +73,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // Set Theme
-        this.setTheme(R.style.Theme_Light);
-
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.preferences);
+
+        findPreference("theme").setOnPreferenceChangeListener(themeListener);
 
         // Get preferences from screen
         currentServer = (ListPreference) findPreference("currentServer");
@@ -91,8 +91,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         refresh_period = (ListPreference) findPreference("refresh_period");
         connection_timeout = (EditTextPreference) findPreference("connection_timeout");
         data_timeout = (EditTextPreference) findPreference("data_timeout");
-
-        dark_ui = (CheckBoxPreference) findPreference("dark_ui");
 
         enable_notifications = (CheckBoxPreference) findPreference("enable_notifications");
         notification_period = (ListPreference) findPreference("notification_period");
@@ -348,7 +346,26 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     }
 
 
-
+    Preference.OnPreferenceChangeListener themeListener = new Preference.OnPreferenceChangeListener(){
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            String stringValue = String.valueOf(newValue);
+            int mode = AppCompatDelegate.MODE_NIGHT_AUTO;
+            switch(stringValue){
+                case "light":
+                    mode = AppCompatDelegate.MODE_NIGHT_NO;
+                    break;
+                case "dark":
+                    mode = AppCompatDelegate.MODE_NIGHT_YES;
+                    break;
+                case "system":
+                    mode = AppCompatDelegate.MODE_NIGHT_AUTO;
+                    break;
+            }
+            AppCompatDelegate.setDefaultNightMode(mode);
+            return true;
+        }
+    };
 
     private void openFilePicker() {
 
@@ -599,8 +616,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         data_timeout.setSummary(sharedPrefs.getString("data_timeout" + value, "20"));
 
 
-        dark_ui.setChecked(sharedPrefs.getBoolean("dark_ui", false));
-
         if (notification_period.getEntry() == null) {
             notification_period.setValueIndex(1);
         }
@@ -684,8 +699,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         if (data_timeout.getText().toString() != null && data_timeout.getText().toString() != "") {
             editor.putString("data_timeout", data_timeout.getText().toString());
         }
-
-        editor.putBoolean("dark_ui" + currentServerValue, dark_ui.isChecked());
 
         if (ssid.getText().toString() != null && ssid.getText().toString() != "") {
             editor.putString("ssid" + currentServerValue, ssid.getText().toString());

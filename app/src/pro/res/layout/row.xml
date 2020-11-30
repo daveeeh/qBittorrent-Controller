@@ -20,7 +20,7 @@
         android:paddingRight="10dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:background="?backgroundSelector">
+        android:background="?android:attr/colorBackground">
 
         <ImageView
             android:id="@+id/icon"

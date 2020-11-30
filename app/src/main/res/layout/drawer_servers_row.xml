@@ -9,7 +9,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/primary_dark"
+    android:background="?attr/selectableItemBackground"
     android:minHeight="@dimen/draweritemheight"
     android:orientation="vertical"
     android:padding="@dimen/drawerpadding">
@@ -37,7 +37,6 @@
             android:paddingRight="@dimen/drawerpadding"
             android:text="Example"
             android:textAppearance="?android:attr/textAppearanceListItemSmall"
-            android:textColor="#ffffff"
             android:layout_gravity="center" />
 
         <TextView

@@ -11,7 +11,7 @@
     android:id="@+id/drawer_server_row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#434343"
+    android:background="?attr/selectableItemBackground"
     android:minHeight="@dimen/draweritemheight"
     android:padding="@dimen/drawerpadding">
  
@@ -32,7 +32,6 @@
         android:layout_toRightOf="@+id/imageViewIcon"
         android:paddingRight="@dimen/drawerpadding"
         tools:text="Example"
-        android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:textColor="@color/Theme_Dark_accent" />
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
  
 </RelativeLayout>

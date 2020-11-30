@@ -10,7 +10,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/primary"
+    android:background="@color/primary_light"
     android:minHeight="@dimen/draweritemheight"
     android:padding="@dimen/drawerpadding">
  
@@ -32,7 +32,6 @@
         android:layout_toRightOf="@+id/imageViewIcon"
         android:paddingRight="@dimen/drawerpadding"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:textColor="#ffffff"
         tools:text="Downloading"/>
  
 </RelativeLayout>

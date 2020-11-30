@@ -12,6 +12,7 @@
     android:layout_height="wrap_content"
     android:paddingBottom="5dp"
     android:paddingLeft="10dp"
+    android:background="?android:attr/colorBackground"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListView
