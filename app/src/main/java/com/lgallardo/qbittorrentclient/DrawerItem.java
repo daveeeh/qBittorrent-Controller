@@ -15,6 +15,7 @@ public class DrawerItem {
     public int type;
     public boolean active;
     private String action;
+    public String arrow = "▼";
 
 
     // Constructor
@@ -25,6 +26,16 @@ public class DrawerItem {
         this.type = type;
         this.active = active;
         this.action = action;
+    }
+
+    public DrawerItem(int icon, String name, int type, boolean active, String action, String arrow) {
+
+        this.icon = icon;
+        this.name = name;
+        this.type = type;
+        this.active = active;
+        this.action = action;
+        this.arrow = arrow;
     }
 
     public int getType() {
@@ -49,6 +60,10 @@ public class DrawerItem {
         }
 
         return action;
+    }
+
+    public void setArrow(String arrow){
+        this.arrow = arrow;
     }
 
     public void setAction(String action) {

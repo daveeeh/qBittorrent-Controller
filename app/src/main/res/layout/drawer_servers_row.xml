@@ -50,8 +50,7 @@
             android:paddingRight="@dimen/drawerpadding"
             android:paddingLeft="@dimen/drawerpadding"
             android:text="▼"
-            android:textAppearance="?android:attr/textAppearanceListItemSmall"
-            android:textColor="#ffffff" />
+            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
     </LinearLayout>
 

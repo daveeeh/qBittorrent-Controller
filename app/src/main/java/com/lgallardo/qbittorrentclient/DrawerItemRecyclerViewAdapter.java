@@ -69,6 +69,7 @@ public class DrawerItemRecyclerViewAdapter extends RecyclerView.Adapter<DrawerIt
         // New
         ImageView imageViewIcon;
         TextView textViewName;
+        TextView textViewArrow;
 
         // Creating ViewHolder Constructor with View and viewType As a parameter
         public ViewHolder(final View itemView, int ViewType) {
@@ -89,6 +90,7 @@ public class DrawerItemRecyclerViewAdapter extends RecyclerView.Adapter<DrawerIt
             // Here we set the appropriate view in accordance with the the view type as passed when the holder object is created
             imageViewIcon = (ImageView) itemView.findViewById(R.id.imageViewIcon);
             textViewName = (TextView) itemView.findViewById(R.id.textViewName);
+            textViewArrow = itemView.findViewById(R.id.textViewDrawerArrow);
 
         }
 
@@ -148,6 +150,8 @@ public class DrawerItemRecyclerViewAdapter extends RecyclerView.Adapter<DrawerIt
                     }
 
                     drawerItem.setActive(true);
+                    drawerItem.setArrow("▲");
+                    notifyItemChanged(1);
                     drawerOffset = serverItems.size();
                 }
 
@@ -408,6 +412,8 @@ public class DrawerItemRecyclerViewAdapter extends RecyclerView.Adapter<DrawerIt
                     } else {
 
                         // Set as active
+                        drawerItem.setArrow("▲");
+                        notifyItemChanged(11);
                         drawerItem.setActive(true);
                         items.set(getLayoutPosition() - 1, drawerItem);
 
@@ -544,6 +550,11 @@ public class DrawerItemRecyclerViewAdapter extends RecyclerView.Adapter<DrawerIt
 
 //            Log.d("Debug", "DrawerItemRecyclerViewAdapter - OnClick() - Analysing: " + item.name);
 
+            if (item.getType() == TYPE_SERVERS) {
+                item.setArrow("▼");
+                notifyItemChanged(iterator.nextIndex());
+            }
+
             if (item.getType() == TYPE_SERVER || item.getType() == TYPE_SERVER_ACTIVE) {
 
 //                Log.d("Debug", "DrawerItemRecyclerViewAdapter - OnClick() - Removing: " + item.name);
@@ -563,6 +574,11 @@ public class DrawerItemRecyclerViewAdapter extends RecyclerView.Adapter<DrawerIt
             DrawerItem item = (DrawerItem) iterator.next();
 
 //            Log.d("Debug", "[DrawerItemRecyclerViewAdapter] : Removing item: " + item.name);
+
+            if (item.getType() == TYPE_CATEGORIES) {
+                item.setArrow("▼");
+                notifyItemChanged(iterator.nextIndex());
+            }
 
             if (item.getType() == TYPE_CATEGORY || item.getType() == TYPE_CATEGORY_ACTIVE) {
 
@@ -808,7 +824,8 @@ public class DrawerItemRecyclerViewAdapter extends RecyclerView.Adapter<DrawerIt
             holder.imageViewIcon.setImageResource(item.icon);
             holder.textViewName.setText(item.name);
             holder.positionInItems = (position - 1);
-
+            if(holder.textViewArrow!=null)
+                holder.textViewArrow.setText(item.arrow);
 
         } else {
             // header

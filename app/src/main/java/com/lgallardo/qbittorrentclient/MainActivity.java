@@ -405,7 +405,7 @@
 
          // Get preferences
          getSettings();
-         int theme = AppCompatDelegate.MODE_NIGHT_AUTO;
+         int theme;
          switch(sharedPrefs.getString("theme","system")){
              case "light":
                  theme = AppCompatDelegate.MODE_NIGHT_NO;
@@ -413,6 +413,12 @@
              case "dark":
                  theme = AppCompatDelegate.MODE_NIGHT_YES;
                 break;
+             case "system":
+                 theme = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+                 break;
+             default:
+                 theme = AppCompatDelegate.MODE_NIGHT_AUTO;
+                 break;
          }
          AppCompatDelegate.setDefaultNightMode(theme);
 
@@ -3758,7 +3764,7 @@
                  // Set uncategorized first
 
                  // Add category
-                 categoryItems.add(new DrawerItem(R.drawable.ic_drawer_categories, getResources().getString(R.string.drawer_category_categories), DRAWER_CATEGORIES, true, "categories"));
+                 categoryItems.add(new DrawerItem(R.drawable.ic_drawer_categories, getResources().getString(R.string.drawer_category_categories), DRAWER_CATEGORIES, true, "categories", "▲"));
 
                  // Add All
                  category = getResources().getString(R.string.drawer_category_all);

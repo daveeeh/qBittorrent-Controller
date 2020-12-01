@@ -350,7 +350,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             String stringValue = String.valueOf(newValue);
-            int mode = AppCompatDelegate.MODE_NIGHT_AUTO;
+            int mode;
             switch(stringValue){
                 case "light":
                     mode = AppCompatDelegate.MODE_NIGHT_NO;
@@ -359,6 +359,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                     mode = AppCompatDelegate.MODE_NIGHT_YES;
                     break;
                 case "system":
+                    mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+                    break;
+                default:
                     mode = AppCompatDelegate.MODE_NIGHT_AUTO;
                     break;
             }

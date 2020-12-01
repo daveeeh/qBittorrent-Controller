@@ -134,11 +134,11 @@
     <string-array name="themes">
         <item name="light">Light</item>
         <item name="dark">Dark</item>
-        <item name="default">System default</item>
+        <item name="default">Set by Battery Saver</item>
     </string-array>
     <string-array name="themes_values">
         <item name="light">light</item>
         <item name="dark">dark</item>
-        <item name="default">system</item>
+        <item name="default">auto</item>
     </string-array>
 </resources>
