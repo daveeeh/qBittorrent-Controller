@@ -11,4 +11,6 @@
 
     <color name="Theme_Light_windowBackground">#ff434343</color>
     <color name="Theme_Light_drawerBackground">#111</color>
+
+    <color name="background">@android:color/background_dark</color>
 </resources>
