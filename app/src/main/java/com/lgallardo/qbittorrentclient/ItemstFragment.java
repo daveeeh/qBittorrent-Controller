@@ -9,10 +9,11 @@
 package com.lgallardo.qbittorrentclient;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
-import android.app.ListFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.ActionMode;
@@ -26,19 +27,30 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+
 public class ItemstFragment extends ListFragment {
 
-    static public ActionMode mActionMode;
+    public ActionMode mActionMode;
     public int nr = 0;
     int secondContainer;
     TorrentDetailsFragment detailsFragment;
-    private RecyclerView recyclerView;
     private RefreshListener refreshListener;
-    public static View.OnClickListener originalListener;
+    public View.OnClickListener originalListener;
 
-    public static SwipeRefreshLayout mSwipeRefreshLayout;
+    public SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private TorrentListAdapter myadapter;
+    private String[] names;
+    private Torrent[] lines;
+    private boolean isInActionMode;
+    private HashSet<Integer> restoredSelectedIds = new HashSet<>();
 
     public ItemstFragment() {
+
     }
 
     public void setSecondFragmentContainer(int container) {
@@ -54,6 +66,16 @@ public class ItemstFragment extends ListFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if(savedInstanceState!=null) {
+            isInActionMode = savedInstanceState.getBoolean("isInActionMode");
+            restoredSelectedIds = (HashSet<Integer>) savedInstanceState.getSerializable("selectedIds");
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         super.onCreateView(inflater, container, savedInstanceState);
@@ -61,6 +83,13 @@ public class ItemstFragment extends ListFragment {
         // Tell the host activity that your fragment has menu options that it
         // wants to add/replace/delete using the onCreateOptionsMenu method.
         setHasOptionsMenu(true);
+
+        if(names!=null)
+            myadapter = new TorrentListAdapter(getActivity(), names, lines);
+        else
+            myadapter = new TorrentListAdapter(getActivity());
+        myadapter.setSelectedIds(restoredSelectedIds);
+        setListAdapter(myadapter);
 
         // Get Refresh Listener
         refreshListener = (RefreshListener) getActivity();
@@ -85,7 +114,394 @@ public class ItemstFragment extends ListFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putBoolean("isInActionMode", mActionMode!=null);
+        if(myadapter!=null) {
+            outState.putSerializable("selectedIds", myadapter.mSelection);
+        }
     }
+
+    public void setNamesAndData(String[] names, Torrent[] lines) {
+        this.names = names;
+        this.lines = lines;
+        if(myadapter!=null){
+            myadapter.setNames(names);
+            myadapter.setData(lines);
+            myadapter.notifyDataSetChanged();
+        }
+    }
+
+    //TODO Migrate from MultiChoiceListener to other method
+    AbsListView.MultiChoiceModeListener multiChoicModeListener = new AbsListView.MultiChoiceModeListener() {
+
+        @Override
+        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+
+            myadapter.setSelection(position, checked);
+
+            // Set title with number of items selected
+            mode.setTitle("" + myadapter.mSelection.size());
+
+        }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.main_contextual_action_bar, menu);
+
+            mSwipeRefreshLayout.setEnabled(false);
+
+            mActionMode = actionMode;
+            mActionMode.setTitle(String.valueOf(myadapter.mSelection.size()));
+
+            return true;
+
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+
+            menu.findItem(R.id.action_first_last_piece_prio).setVisible(true);
+            menu.findItem(R.id.action_sequential_download).setVisible(true);
+
+            // TODO: set category/category visible after implement it
+            menu.findItem(R.id.action_label_menu).setVisible(false);
+            menu.findItem(R.id.action_set_category).setVisible(false);
+            menu.findItem(R.id.action_delete_category).setVisible(false);
+
+            return true;
+        }
+
+        // This actions are click in the torrent list view (CAB)
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+            AlertDialog.Builder builder;
+            AlertDialog dialog;
+            String hashes = null;
+            final String hashesStr;
+
+            // Get MainActivity
+            final MainActivity m = (MainActivity) getActivity();
+
+            // Get hashes
+            for (int i = 0; myadapter.getCount() > i; i++) {
+
+
+                if (myadapter.isPositionChecked(i)) {
+
+                    if (hashes == null) {
+                        hashes = myadapter.getData()[i].getHash();
+                    } else {
+                        hashes = hashes + "|" + myadapter.getData()[i].getHash();
+                    }
+                }
+            }
+
+            hashesStr = hashes;
+
+            ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
+
+            switch (item.getItemId()) {
+
+                case R.id.action_pause:
+                    m.pauseSelectedTorrents(hashes);
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+
+
+                case R.id.action_resume:
+
+                    m.startSelectedTorrents(hashes);
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+
+                case R.id.action_delete:
+
+                    if (!getActivity().isFinishing()) {
+                        builder = new AlertDialog.Builder(getActivity());
+
+                        // Message
+                        builder.setMessage(R.string.dm_deleteSelectedTorrents).setTitle(R.string.dt_deleteSelectedTorrents);
+
+                        // Cancel
+                        builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User canceled the dialog
+                            }
+                        });
+
+                        // Ok
+                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User accepted the dialog
+                                m.deleteSelectedTorrents(hashesStr);
+
+                            }
+                        });
+
+                        // Create dialog
+                        dialog = builder.create();
+
+                        // Show dialog
+                        dialog.show();
+
+                        // Clear selection
+                        nr = 0;
+
+                        // Enable SwipeRefresh
+                        mSwipeRefreshLayout.setEnabled(true);
+
+                        myadapter.clearSelection();
+                        mode.finish();
+
+                    }
+
+                    return true;
+                case R.id.action_delete_drive:
+
+                    if (!getActivity().isFinishing()) {
+                        builder = new AlertDialog.Builder(getActivity());
+
+                        // Message
+                        builder.setMessage(R.string.dm_deleteDriveSelectedTorrents).setTitle(R.string.dt_deleteDriveSelectedTorrents);
+
+                        // Cancel
+                        builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User canceled the dialog
+                            }
+                        });
+
+                        // Ok
+                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User accepted the dialog
+                                m.deleteDriveSelectedTorrents(hashesStr);
+
+                            }
+                        });
+
+                        // Create dialog
+                        dialog = builder.create();
+
+                        // Show dialog
+                        dialog.show();
+
+                        // Clear selection
+                        nr = 0;
+
+                        // Enable SwipeRefresh
+                        mSwipeRefreshLayout.setEnabled(true);
+
+                        myadapter.clearSelection();
+                        mode.finish();
+
+                    }
+
+                    return true;
+                case R.id.action_force_start:
+
+                    m.forceStartSelectedTorrents(hashes);
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+                case R.id.action_increase_prio:
+                    m.increasePrioTorrent(hashes);
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+
+                case R.id.action_decrease_prio:
+                    m.decreasePrioTorrent(hashes);
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+
+                case R.id.action_max_prio:
+                    m.maxPrioTorrent(hashes);
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+
+                case R.id.action_min_prio:
+                    m.minPrioTorrent(hashes);
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+
+                case R.id.action_upload_rate_limit:
+
+                    m.uploadRateLimitDialog(hashes);
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+
+                case R.id.action_download_rate_limit:
+
+                    m.downloadRateLimitDialog(hashes);
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+                case R.id.action_recheck:
+
+                    m.recheckTorrents(hashes);
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+                case R.id.action_sequential_download:
+
+                    m.toggleSequentialDownload(hashes);
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+                case R.id.action_first_last_piece_prio:
+
+                    m.toggleFirstLastPiecePrio(hashes);
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+                case R.id.action_set_category:
+
+                    m.setCategoryDialog(hashes);
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+
+                case R.id.action_delete_category:
+
+                    m.setCategory(hashes, " ");
+
+                    // Clear selection
+                    nr = 0;
+
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+
+                    myadapter.clearSelection();
+                    mode.finish();
+
+                    return true;
+                default:
+                    // Enable SwipeRefresh
+                    mSwipeRefreshLayout.setEnabled(true);
+                    return true;
+            }
+
+
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode actionMode) {
+            mActionMode = null;
+            mSwipeRefreshLayout.setEnabled(true);
+        }
+    };
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -96,392 +512,7 @@ public class ItemstFragment extends ListFragment {
             getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 
             // Get adapter
-            final TorrentListAdapter mAdapter = (TorrentListAdapter) this.getListAdapter();
-            getListView().setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
-
-                private int nr = 0;
-
-                @Override
-                public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-
-                    if (checked) {
-                        nr++;
-                        mAdapter.setNewSelection(position, checked);
-
-                    } else {
-                        nr--;
-                        mAdapter.removeSelection(position);
-                    }
-
-                    // Set title with number of items selected
-                    mode.setTitle("" + nr);
-
-                }
-
-                @Override
-                public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-                    nr = 0;
-                    MenuInflater inflater = getActivity().getMenuInflater();
-                    inflater.inflate(R.menu.main_contextual_action_bar, menu);
-
-                    mSwipeRefreshLayout.setEnabled(false);
-
-                    ItemstFragment.mActionMode = actionMode;
-
-                    return true;
-
-                }
-
-                @Override
-                public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-
-                    menu.findItem(R.id.action_first_last_piece_prio).setVisible(true);
-                    menu.findItem(R.id.action_sequential_download).setVisible(true);
-
-                    // TODO: set category/category visible after implement it
-                    menu.findItem(R.id.action_label_menu).setVisible(false);
-                    menu.findItem(R.id.action_set_category).setVisible(false);
-                    menu.findItem(R.id.action_delete_category).setVisible(false);
-
-                    return true;
-                }
-
-                // This actions are click in the torrent list view (CAB)
-                @Override
-                public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-
-                    AlertDialog.Builder builder;
-                    AlertDialog dialog;
-                    String hashes = null;
-                    final String hashesStr;
-
-                    // Get MainActivity
-                    final MainActivity m = (MainActivity) getActivity();
-
-                    // Get hashes
-                    for (int i = 0; mAdapter.getCount() > i; i++) {
-
-
-                        if (mAdapter.isPositionChecked(i)) {
-
-                            if (hashes == null) {
-                                hashes = mAdapter.getData()[i].getHash();
-                            } else {
-                                hashes = hashes + "|" + mAdapter.getData()[i].getHash();
-                            }
-                        }
-                    }
-
-                    hashesStr = hashes;
-
-                    ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
-
-                    switch (item.getItemId()) {
-
-                        case R.id.action_pause:
-                            m.pauseSelectedTorrents(hashes);
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-
-
-                        case R.id.action_resume:
-
-                            m.startSelectedTorrents(hashes);
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-
-                        case R.id.action_delete:
-
-                            if (!getActivity().isFinishing()) {
-                                builder = new AlertDialog.Builder(getActivity());
-
-                                // Message
-                                builder.setMessage(R.string.dm_deleteSelectedTorrents).setTitle(R.string.dt_deleteSelectedTorrents);
-
-                                // Cancel
-                                builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // User canceled the dialog
-                                    }
-                                });
-
-                                // Ok
-                                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // User accepted the dialog
-                                        m.deleteSelectedTorrents(hashesStr);
-
-                                    }
-                                });
-
-                                // Create dialog
-                                dialog = builder.create();
-
-                                // Show dialog
-                                dialog.show();
-
-                                // Clear selection
-                                nr = 0;
-
-                                // Enable SwipeRefresh
-                                mSwipeRefreshLayout.setEnabled(true);
-
-                                mAdapter.clearSelection();
-                                mode.finish();
-
-                            }
-
-                            return true;
-                        case R.id.action_delete_drive:
-
-                            if (!getActivity().isFinishing()) {
-                                builder = new AlertDialog.Builder(getActivity());
-
-                                // Message
-                                builder.setMessage(R.string.dm_deleteDriveSelectedTorrents).setTitle(R.string.dt_deleteDriveSelectedTorrents);
-
-                                // Cancel
-                                builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // User canceled the dialog
-                                    }
-                                });
-
-                                // Ok
-                                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // User accepted the dialog
-                                        m.deleteDriveSelectedTorrents(hashesStr);
-
-                                    }
-                                });
-
-                                // Create dialog
-                                dialog = builder.create();
-
-                                // Show dialog
-                                dialog.show();
-
-                                // Clear selection
-                                nr = 0;
-
-                                // Enable SwipeRefresh
-                                mSwipeRefreshLayout.setEnabled(true);
-
-                                mAdapter.clearSelection();
-                                mode.finish();
-
-                            }
-
-                            return true;
-                        case R.id.action_force_start:
-
-                            m.forceStartSelectedTorrents(hashes);
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-                        case R.id.action_increase_prio:
-                            m.increasePrioTorrent(hashes);
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-
-                        case R.id.action_decrease_prio:
-                            m.decreasePrioTorrent(hashes);
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-
-                        case R.id.action_max_prio:
-                            m.maxPrioTorrent(hashes);
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-
-                        case R.id.action_min_prio:
-                            m.minPrioTorrent(hashes);
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-
-                        case R.id.action_upload_rate_limit:
-
-                            m.uploadRateLimitDialog(hashes);
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-
-                        case R.id.action_download_rate_limit:
-
-                            m.downloadRateLimitDialog(hashes);
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-                        case R.id.action_recheck:
-
-                            m.recheckTorrents(hashes);
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-                        case R.id.action_sequential_download:
-
-                            m.toggleSequentialDownload(hashes);
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-                        case R.id.action_first_last_piece_prio:
-
-                            m.toggleFirstLastPiecePrio(hashes);
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-                        case R.id.action_set_category:
-
-                            m.setCategoryDialog(hashes);
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-
-                        case R.id.action_delete_category:
-
-                            m.setCategory(hashes, " ");
-
-                            // Clear selection
-                            nr = 0;
-
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-
-                            mAdapter.clearSelection();
-                            mode.finish();
-
-                            return true;
-                        default:
-                            // Enable SwipeRefresh
-                            mSwipeRefreshLayout.setEnabled(true);
-                            return true;
-                    }
-
-
-                }
-
-                @Override
-                public void onDestroyActionMode(ActionMode actionMode) {
-                    if (mAdapter != null) {
-                        mAdapter.clearSelection();
-                    }
-                    ItemstFragment.mActionMode = null;
-
-                    mSwipeRefreshLayout.setEnabled(true);
-
-                }
-            });
+            getListView().setMultiChoiceModeListener(multiChoicModeListener);
 
             getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
@@ -490,7 +521,7 @@ public class ItemstFragment extends ListFragment {
                     if(MainActivity.listViewRefreshing) {
                         return true;
                     }
-                    getListView().setItemChecked(position, !mAdapter.isPositionChecked(position));
+                    getListView().setItemChecked(position, !myadapter.isPositionChecked(position));
                     return false;
                 }
             });
@@ -565,7 +596,7 @@ public class ItemstFragment extends ListFragment {
 
 
                         // Disable refreshing
-                        MainActivity.disableRefreshSwipeLayout();
+                        ((MainActivity) getActivity()).disableRefreshSwipeLayout();
 
                         // Set default toolbar behaviour
                         ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -761,5 +792,4 @@ public class ItemstFragment extends ListFragment {
             }
         }
     }
-
 }

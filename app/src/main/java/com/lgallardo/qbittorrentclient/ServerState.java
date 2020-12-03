@@ -13,13 +13,13 @@ public class ServerState {
     private double alltime_ul;
     @SerializedName("average_time_queue")
     @Expose
-    private int average_time_queue;
+    private double average_time_queue;
     @SerializedName("connection_status")
     @Expose
     private String connection_status;
     @SerializedName("dht_nodes")
     @Expose
-    private int dht_nodes;
+    private double dht_nodes;
     @SerializedName("dl_info_data")
     @Expose
     private double dl_info_data;
@@ -28,7 +28,7 @@ public class ServerState {
     private double dl_info_speed;
     @SerializedName("dl_rate_limit")
     @Expose
-    private int dl_rate_limit;
+    private double dl_rate_limit;
     @SerializedName("free_space_on_disk")
     @Expose
     private double free_space_on_disk;
@@ -37,7 +37,7 @@ public class ServerState {
     private float global_ratio;
     @SerializedName("queued_io_jobs")
     @Expose
-    private int queued_io_jobs;
+    private double queued_io_jobs;
     @SerializedName("queueing")
     @Expose
     private boolean queueing;
@@ -46,16 +46,16 @@ public class ServerState {
     private double read_cache_hits;
     @SerializedName("read_cache_overload")
     @Expose
-    private int read_cache_overload;
+    private double read_cache_overload;
     @SerializedName("refresh_interval")
     @Expose
-    private int refresh_interval;
+    private double refresh_interval;
     @SerializedName("total_buffers_size")
     @Expose
-    private int total_buffers_size;
+    private double total_buffers_size;
     @SerializedName("total_peer_connections")
     @Expose
-    private int total_peer_connections;
+    private double total_peer_connections;
     @SerializedName("total_queued_size")
     @Expose
     private double total_queued_size;
@@ -70,13 +70,13 @@ public class ServerState {
     private double up_info_speed;
     @SerializedName("up_rate_limit")
     @Expose
-    private int up_rate_limit;
+    private double up_rate_limit;
     @SerializedName("use_alt_speed_limits")
     @Expose
     private boolean use_alt_speed_limits;
     @SerializedName("write_cache_overload")
     @Expose
-    private int write_cache_overload;
+    private double write_cache_overload;
 
     public double getAlltime_dl() {
         return alltime_dl;
@@ -102,11 +102,11 @@ public class ServerState {
         this.connection_status = connection_status;
     }
 
-    public int getDht_nodes() {
+    public double getDht_nodes() {
         return dht_nodes;
     }
 
-    public void setDht_nodes(int dht_nodes) {
+    public void setDht_nodes(double dht_nodes) {
         this.dht_nodes = dht_nodes;
     }
 
@@ -126,11 +126,11 @@ public class ServerState {
         this.dl_info_speed = dl_info_speed;
     }
 
-    public int getDl_rate_limit() {
+    public double getDl_rate_limit() {
         return dl_rate_limit;
     }
 
-    public void setDl_rate_limit(int dl_rate_limit) {
+    public void setDl_rate_limit(double dl_rate_limit) {
         this.dl_rate_limit = dl_rate_limit;
     }
 
@@ -166,11 +166,11 @@ public class ServerState {
         this.up_info_speed = up_info_speed;
     }
 
-    public int getUp_rate_limit() {
+    public double getUp_rate_limit() {
         return up_rate_limit;
     }
 
-    public void setUp_rate_limit(int up_rate_limit) {
+    public void setUp_rate_limit(double up_rate_limit) {
         this.up_rate_limit = up_rate_limit;
     }
 
@@ -182,19 +182,19 @@ public class ServerState {
         this.use_alt_speed_limits = use_alt_speed_limits;
     }
 
-    public int getAverage_time_queue() {
+    public double getAverage_time_queue() {
         return average_time_queue;
     }
 
-    public void setAverage_time_queue(int average_time_queue) {
+    public void setAverage_time_queue(double average_time_queue) {
         this.average_time_queue = average_time_queue;
     }
 
-    public int getQueued_io_jobs() {
+    public double getQueued_io_jobs() {
         return queued_io_jobs;
     }
 
-    public void setQueued_io_jobs(int queued_io_jobs) {
+    public void setQueued_io_jobs(double queued_io_jobs) {
         this.queued_io_jobs = queued_io_jobs;
     }
 
@@ -210,39 +210,39 @@ public class ServerState {
         return read_cache_hits;
     }
 
-    public void setRead_cache_hits(int read_cache_hits) {
+    public void setRead_cache_hits(double read_cache_hits) {
         this.read_cache_hits = read_cache_hits;
     }
 
-    public int getRead_cache_overload() {
+    public double getRead_cache_overload() {
         return read_cache_overload;
     }
 
-    public void setRead_cache_overload(int read_cache_overload) {
+    public void setRead_cache_overload(double read_cache_overload) {
         this.read_cache_overload = read_cache_overload;
     }
 
-    public int getRefresh_interval() {
+    public double getRefresh_interval() {
         return refresh_interval;
     }
 
-    public void setRefresh_interval(int refresh_interval) {
+    public void setRefresh_interval(double refresh_interval) {
         this.refresh_interval = refresh_interval;
     }
 
-    public int getTotal_buffers_size() {
+    public double getTotal_buffers_size() {
         return total_buffers_size;
     }
 
-    public void setTotal_buffers_size(int total_buffers_size) {
+    public void setTotal_buffers_size(double total_buffers_size) {
         this.total_buffers_size = total_buffers_size;
     }
 
-    public int getTotal_peer_connections() {
+    public double getTotal_peer_connections() {
         return total_peer_connections;
     }
 
-    public void setTotal_peer_connections(int total_peer_connections) {
+    public void setTotal_peer_connections(double total_peer_connections) {
         this.total_peer_connections = total_peer_connections;
     }
 
@@ -262,11 +262,11 @@ public class ServerState {
         this.total_wasted_session = total_wasted_session;
     }
 
-    public int getWrite_cache_overload() {
+    public double getWrite_cache_overload() {
         return write_cache_overload;
     }
 
-    public void setWrite_cache_overload(int write_cache_overload) {
+    public void setWrite_cache_overload(double write_cache_overload) {
         this.write_cache_overload = write_cache_overload;
     }
 }

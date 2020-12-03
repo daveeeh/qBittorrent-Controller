@@ -12,8 +12,6 @@
  import android.app.AlarmManager;
  import android.app.AlertDialog;
  import android.app.AlertDialog.Builder;
- import android.app.FragmentManager;
- import android.app.FragmentTransaction;
  import android.app.Notification;
  import android.app.NotificationManager;
  import android.app.PendingIntent;
@@ -38,6 +36,8 @@
  import android.preference.PreferenceManager;
  import android.provider.Settings;
  import android.support.v4.app.ActivityCompat;
+ import android.support.v4.app.FragmentManager;
+ import android.support.v4.app.FragmentTransaction;
  import android.support.v4.content.ContextCompat;
  import android.support.v4.view.GravityCompat;
  import android.support.v4.view.MenuItemCompat;
@@ -282,9 +282,6 @@
      // Params to get JSON Array
      private static String[] params = new String[2];
      public com.lgallardo.qbittorrentclient.ItemstFragment firstFragment;
-
-     // myAdapter myadapter
-     public TorrentListAdapter myadapter;
 
      // Http status code
      public int httpStatusCode = 0;
@@ -584,6 +581,7 @@
              // }
 
              // This fragment will hold the list of torrents
+             firstFragment = (ItemstFragment) getSupportFragmentManager().findFragmentByTag("firstFragment");
              if (firstFragment == null) {
                  firstFragment = new com.lgallardo.qbittorrentclient.ItemstFragment();
              }
@@ -599,7 +597,7 @@
              secondFragment = new AboutFragment();
 
              // Add the fragment to the 'list_frame' FrameLayout
-             FragmentManager fragmentManager = getFragmentManager();
+             FragmentManager fragmentManager = getSupportFragmentManager();
              FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
              if (fragmentManager.findFragmentByTag("firstFragment") == null) {
@@ -623,6 +621,7 @@
              // Phones handle just one fragment
 
              // Create an instance of ItemsFragments
+             firstFragment = (ItemstFragment) getSupportFragmentManager().findFragmentByTag("firstFragment");
              if (firstFragment == null) {
                  firstFragment = new com.lgallardo.qbittorrentclient.ItemstFragment();
              }
@@ -654,7 +653,7 @@
 //            }
 
              // Add the fragment to the 'list_frame' FrameLayout
-             FragmentManager fragmentManager = getFragmentManager();
+             FragmentManager fragmentManager = getSupportFragmentManager();
              FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
              if (fragmentManager.findFragmentByTag("firstFragment") == null) {
@@ -750,7 +749,7 @@
          // Handle Item list empty due to Fragment stack
          try {
 
-             FragmentManager fm = getFragmentManager();
+             FragmentManager fm = getSupportFragmentManager();
              FragmentTransaction fragmentTransaction = fm.beginTransaction();
 
              if (fm.getBackStackEntryCount() == 0 && firstFragment.getSecondFragmentContainer() == R.id.one_frame && fm.findFragmentById(R.id.one_frame) instanceof com.lgallardo.qbittorrentclient.ItemstFragment) {
@@ -967,13 +966,13 @@
              return;
          }
 
-         FragmentManager fm = getFragmentManager();
+         FragmentManager fm = getSupportFragmentManager();
          com.lgallardo.qbittorrentclient.ItemstFragment fragment = null;
 
          // Close Contextual Action Bar
-         if (com.lgallardo.qbittorrentclient.ItemstFragment.mActionMode != null) {
+         if (firstFragment.mActionMode != null) {
 
-             com.lgallardo.qbittorrentclient.ItemstFragment.mActionMode.finish();
+             firstFragment.mActionMode.finish();
 
          } else {
 
@@ -1004,7 +1003,7 @@
 
              getSupportActionBar().setDisplayShowTitleEnabled(true);
              MainActivity.drawerToggle.setDrawerIndicatorEnabled(true);
-             MainActivity.drawerToggle.setToolbarNavigationClickListener(ItemstFragment.originalListener);
+             MainActivity.drawerToggle.setToolbarNavigationClickListener(firstFragment.originalListener);
 
              // Set title
              setSelectionAndTitle(MainActivity.currentState);
@@ -3952,17 +3951,7 @@
 
                      // Update torrent list
                      try {
-                         myadapter.setNames(names);
-                         myadapter.setData(lines);
-                         myadapter.notifyDataSetChanged();
-                     } catch (NullPointerException ne) {
-                         myadapter = new TorrentListAdapter(MainActivity.this, names, lines);
-                         firstFragment.setListAdapter(myadapter);
-
-                         myadapter.setNames(names);
-                         myadapter.setData(lines);
-                         myadapter.notifyDataSetChanged();
-
+                         firstFragment.setNamesAndData(names, lines);
                      } catch (IllegalStateException le) {
                          Log.e("Debug", "IllegalStateException: " + le.toString());
                      }
@@ -3971,7 +3960,7 @@
                      aboutFragment = new AboutFragment();
 
                      // Add the fragment to the 'list_frame' FrameLayout
-                     FragmentManager fragmentManager = getFragmentManager();
+                     FragmentManager fragmentManager = getSupportFragmentManager();
                      FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
                      // Got some results
@@ -4051,11 +4040,7 @@
 
                          // No results
 
-                         myadapter.setNames(null);
-                         myadapter.setData(null);
-
-                         myadapter.notifyDataSetChanged();
-
+                         firstFragment.setNamesAndData(null, null);
 
                          //Set first and second fragments
                          if (findViewById(R.id.fragment_container) != null) {
@@ -4854,7 +4839,7 @@
          actionBar.setHomeButtonEnabled(true);
 
 
-         drawerToggle.setToolbarNavigationClickListener(ItemstFragment.originalListener);
+         drawerToggle.setToolbarNavigationClickListener(firstFragment.originalListener);
 
          // Set title
          setSelectionAndTitle(MainActivity.currentState);
@@ -6126,7 +6111,7 @@
 
 
          if (findViewById(R.id.one_frame) != null) {
-             FragmentManager fragmentManager = getFragmentManager();
+             FragmentManager fragmentManager = getSupportFragmentManager();
 
              if (fragmentManager.findFragmentByTag("firstFragment") instanceof com.lgallardo.qbittorrentclient.TorrentDetailsFragment) {
                  // Reset back button stack
@@ -6159,7 +6144,7 @@
 
      }
 
-     public static void disableRefreshSwipeLayout() {
+     public void disableRefreshSwipeLayout() {
 
          if (com.lgallardo.qbittorrentclient.AboutFragment.mSwipeRefreshLayout != null) {
              com.lgallardo.qbittorrentclient.AboutFragment.mSwipeRefreshLayout.setRefreshing(false);
@@ -6167,10 +6152,10 @@
              com.lgallardo.qbittorrentclient.AboutFragment.mSwipeRefreshLayout.setEnabled(true);
          }
 
-         if (com.lgallardo.qbittorrentclient.ItemstFragment.mSwipeRefreshLayout != null) {
-             com.lgallardo.qbittorrentclient.ItemstFragment.mSwipeRefreshLayout.setRefreshing(false);
-             com.lgallardo.qbittorrentclient.ItemstFragment.mSwipeRefreshLayout.clearAnimation();
-             com.lgallardo.qbittorrentclient.ItemstFragment.mSwipeRefreshLayout.setEnabled(true);
+         if (firstFragment.mSwipeRefreshLayout != null) {
+             firstFragment.mSwipeRefreshLayout.setRefreshing(false);
+             firstFragment.mSwipeRefreshLayout.clearAnimation();
+             firstFragment.mSwipeRefreshLayout.setEnabled(true);
          }
 
          if (com.lgallardo.qbittorrentclient.TorrentDetailsFragment.mSwipeRefreshLayout != null) {
@@ -6192,9 +6177,9 @@
                  AboutFragment.mSwipeRefreshLayout.setRefreshing(true);
              }
 
-             if (com.lgallardo.qbittorrentclient.ItemstFragment.mSwipeRefreshLayout != null) {
-                 com.lgallardo.qbittorrentclient.ItemstFragment.mSwipeRefreshLayout.setRefreshing(true);
-                 com.lgallardo.qbittorrentclient.ItemstFragment.mSwipeRefreshLayout.setEnabled(false);
+             if (firstFragment.mSwipeRefreshLayout != null) {
+                 firstFragment.mSwipeRefreshLayout.setRefreshing(true);
+                 firstFragment.mSwipeRefreshLayout.setEnabled(false);
              }
 
              if (com.lgallardo.qbittorrentclient.TorrentDetailsFragment.mSwipeRefreshLayout != null) {

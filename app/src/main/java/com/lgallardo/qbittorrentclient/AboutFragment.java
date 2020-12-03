@@ -8,8 +8,9 @@
  */
 package com.lgallardo.qbittorrentclient;
 
-import android.app.Fragment;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.util.TypedValue;
@@ -28,6 +29,7 @@ public class AboutFragment extends Fragment {
     public AboutFragment() {
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 

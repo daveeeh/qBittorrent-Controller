@@ -19,15 +19,23 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 class TorrentListAdapter extends ArrayAdapter<String> {
 
-    private static HashMap<Integer, Boolean> mSelection = new HashMap<Integer, Boolean>();
+    HashSet<Integer> mSelection = new HashSet<>();
     private String[] torrentsNames;
     private Torrent[] torrentsData;
     private Context context;
+
+    public TorrentListAdapter(Context context){
+        super(context, R.layout.row, R.id.name);
+
+        this.context = context;
+    }
 
     public TorrentListAdapter(Context context, String[] torrentsNames, Torrent[] torrentsData) {
         super(context, R.layout.row, R.id.name, torrentsNames);
@@ -40,7 +48,7 @@ class TorrentListAdapter extends ArrayAdapter<String> {
 
     @Override
     public int getCount() {
-        return (torrentsNames != null) ? torrentsNames.length : 1;
+        return (torrentsNames != null) ? torrentsNames.length : 0;
     }
 
     @Override
@@ -116,7 +124,7 @@ class TorrentListAdapter extends ArrayAdapter<String> {
 
             row.setBackgroundColor(getContext().getResources().getColor(R.color.background)); //default color
 
-            if (mSelection.get(position) != null) {
+            if (mSelection.contains(position)) {
                 row.setBackgroundColor(getContext().getResources().getColor(R.color.accent));// this is a selected position so make it blue
             }
         } else {
@@ -149,28 +157,20 @@ class TorrentListAdapter extends ArrayAdapter<String> {
     }
 
 
-    public void setNewSelection(int position, boolean value) {
-
-        mSelection.put(position, value);
+    public void setSelection(Integer position, boolean value) {
+        if(value){
+            mSelection.add(position);
+        }else
+            mSelection.remove(position);
         notifyDataSetChanged();
     }
 
-    public boolean isPositionChecked(int position) {
-        Boolean result = mSelection.get(position);
-        return result == null ? false : result;
-    }
-
-    public Set<Integer> getCurrentCheckedPosition() {
-        return mSelection.keySet();
-    }
-
-    public void removeSelection(int position) {
-        mSelection.remove(position);
-        notifyDataSetChanged();
+    public boolean isPositionChecked(Integer position) {
+        return mSelection.contains(position);
     }
 
     public void clearSelection() {
-        mSelection = new HashMap<Integer, Boolean>();
+        mSelection = new HashSet<>();
         notifyDataSetChanged();
     }
 
@@ -187,21 +187,7 @@ class TorrentListAdapter extends ArrayAdapter<String> {
         this.torrentsData = data;
     }
 
-    @Override
-    public boolean isEnabled(int position) {
-        if (areAllItemsEnabled()) {
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    @Override
-    public boolean areAllItemsEnabled() {
-        if (torrentsData != null && !com.lgallardo.qbittorrentclient.ItemstFragment.mSwipeRefreshLayout.isRefreshing()) {
-            return true;
-        } else {
-            return false;
-        }
+    public void setSelectedIds(HashSet<Integer> restoredSelectedIds) {
+        this.mSelection = restoredSelectedIds;
     }
 }
