@@ -29,26 +29,25 @@
  import android.net.wifi.WifiInfo;
  import android.net.wifi.WifiManager;
  import android.os.AsyncTask;
- import android.os.Build;
  import android.os.Bundle;
  import android.os.Handler;
  import android.os.SystemClock;
  import android.preference.PreferenceManager;
  import android.provider.Settings;
- import android.support.v4.app.ActivityCompat;
- import android.support.v4.app.FragmentManager;
- import android.support.v4.app.FragmentTransaction;
- import android.support.v4.content.ContextCompat;
- import android.support.v4.view.GravityCompat;
- import android.support.v4.view.MenuItemCompat;
- import android.support.v4.widget.DrawerLayout;
- import android.support.v7.app.ActionBarDrawerToggle;
- import android.support.v7.app.AppCompatActivity;
- import android.support.v7.app.AppCompatDelegate;
- import android.support.v7.widget.LinearLayoutManager;
- import android.support.v7.widget.RecyclerView;
- import android.support.v7.widget.SearchView;
- import android.support.v7.widget.Toolbar;
+ import androidx.core.app.ActivityCompat;
+ import androidx.fragment.app.FragmentManager;
+ import androidx.fragment.app.FragmentTransaction;
+ import androidx.core.content.ContextCompat;
+ import androidx.core.view.GravityCompat;
+ import androidx.core.view.MenuItemCompat;
+ import androidx.drawerlayout.widget.DrawerLayout;
+ import androidx.appcompat.app.ActionBarDrawerToggle;
+ import androidx.appcompat.app.AppCompatActivity;
+ import androidx.appcompat.app.AppCompatDelegate;
+ import androidx.recyclerview.widget.LinearLayoutManager;
+ import androidx.recyclerview.widget.RecyclerView;
+ import androidx.appcompat.widget.SearchView;
+ import androidx.appcompat.widget.Toolbar;
  import android.util.Log;
  import android.view.ContextMenu;
  import android.view.LayoutInflater;
@@ -4831,7 +4830,7 @@
      public void popBackStackPhoneView() {
 
          // Set default toolbar behaviour
-         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+         androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
 
 
          actionBar.setDisplayHomeAsUpEnabled(false);

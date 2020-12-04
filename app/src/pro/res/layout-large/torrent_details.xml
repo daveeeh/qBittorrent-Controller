@@ -6,7 +6,7 @@
   ~   http://www.gnu.org/licenses/lgpl.html
   ~
   -->
-<android.support.v4.widget.SwipeRefreshLayout
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     android:id="@+id/details_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
     android:paddingLeft="10dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -442,7 +442,7 @@
                 android:background="?android:attr/colorBackground"
                 android:elevation="5dp">
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/RecyclerViewContentFiles"
 
                     android:layout_width="match_parent"
@@ -450,7 +450,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp">
 
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
             </FrameLayout>
 
@@ -473,7 +473,7 @@
                 android:background="?android:attr/colorBackground"
                 android:elevation="5dp">
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/RecyclerViewTrackers"
 
                     android:layout_width="match_parent"
@@ -481,7 +481,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp">
 
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
             </FrameLayout>
 
@@ -503,7 +503,7 @@
                 android:background="?android:attr/colorBackground"
                 android:elevation="5dp">
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/RecyclerViewGeneralInfo"
 
                     android:layout_width="match_parent"
@@ -511,7 +511,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp">
 
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
             </FrameLayout>
 
@@ -541,6 +541,6 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"/>
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-</android.support.v4.widget.SwipeRefreshLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

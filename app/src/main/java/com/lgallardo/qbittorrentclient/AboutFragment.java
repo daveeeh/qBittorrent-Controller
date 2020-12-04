@@ -10,8 +10,8 @@ package com.lgallardo.qbittorrentclient;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -50,9 +50,9 @@ public class AboutFragment extends Fragment {
 
         if(isFragmentFirstLoaded) {
 
-            TypedValue typed_value = new TypedValue();
-            getActivity().getTheme().resolveAttribute(android.support.v7.appcompat.R.attr.actionBarSize, typed_value, true);
-            mSwipeRefreshLayout.setProgressViewOffset(false, 0, getResources().getDimensionPixelSize(typed_value.resourceId) * 2);
+//            TypedValue typed_value = new TypedValue();
+//            getActivity().getTheme().resolveAttribute(androidx.appcompat.appcompat.R.attr.actionBarSize, typed_value, true);
+//            mSwipeRefreshLayout.setProgressViewOffset(false, 0, getResources().getDimensionPixelSize(typed_value.resourceId) * 2);
 
             mSwipeRefreshLayout.setColorSchemeColors(R.color.primary, R.color.primary_dark, R.color.primary_text);
 
