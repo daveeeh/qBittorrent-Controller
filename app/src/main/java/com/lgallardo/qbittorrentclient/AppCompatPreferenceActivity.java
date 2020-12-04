@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 package com.lgallardo.qbittorrentclient;
+
+import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StyleRes;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatDelegate;
 /**
  * A {@link android.preference.PreferenceActivity} which implements and proxies the necessary calls
  * to be used with AppCompat.
@@ -33,69 +39,106 @@ import android.view.ViewGroup;
  * {@link android.preference.PreferenceActivity}.
  */
 public abstract class AppCompatPreferenceActivity extends PreferenceActivity {
+
     private AppCompatDelegate mDelegate;
+    private Resources mResources;
+
+    public AppCompatPreferenceActivity() {
+        super();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+        getDelegate().attachBaseContext(newBase);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getDelegate().installViewFactory();
-        getDelegate().onCreate(savedInstanceState);
+        final AppCompatDelegate delegate = getDelegate();
+        delegate.installViewFactory();
+        delegate.onCreate(savedInstanceState);
         super.onCreate(savedInstanceState);
     }
+
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    public void setTheme(@StyleRes final int resId) {
+        super.setTheme(resId);
+        getDelegate().setTheme(resId);
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         getDelegate().onPostCreate(savedInstanceState);
     }
-    public ActionBar getSupportActionBar() {
+
+    ActionBar getSupportActionBar() {
         return getDelegate().getSupportActionBar();
     }
-    public void setSupportActionBar(@Nullable Toolbar toolbar) {
-        getDelegate().setSupportActionBar(toolbar);
-    }
+
+    @NonNull
     @Override
     public MenuInflater getMenuInflater() {
         return getDelegate().getMenuInflater();
     }
+
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
         getDelegate().setContentView(layoutResID);
     }
+
     @Override
     public void setContentView(View view) {
         getDelegate().setContentView(view);
     }
+
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
         getDelegate().setContentView(view, params);
     }
+
     @Override
     public void addContentView(View view, ViewGroup.LayoutParams params) {
         getDelegate().addContentView(view, params);
     }
+
     @Override
     protected void onPostResume() {
         super.onPostResume();
         getDelegate().onPostResume();
     }
+
     @Override
     protected void onTitleChanged(CharSequence title, int color) {
         super.onTitleChanged(title, color);
         getDelegate().setTitle(title);
     }
+
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        if (mResources != null) {
+            // The real (and thus managed) resources object was already updated
+            // by ResourcesManager, so pull the current metrics from there.
+            final DisplayMetrics newMetrics = super.getResources().getDisplayMetrics();
+            mResources.updateConfiguration(newConfig, newMetrics);
+        }
         getDelegate().onConfigurationChanged(newConfig);
     }
+
     @Override
     protected void onStop() {
         super.onStop();
         getDelegate().onStop();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         getDelegate().onDestroy();
     }
+
     public void invalidateOptionsMenu() {
         getDelegate().invalidateOptionsMenu();
     }

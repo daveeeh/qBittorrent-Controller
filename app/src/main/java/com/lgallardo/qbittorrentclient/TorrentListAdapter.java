@@ -123,10 +123,13 @@ class TorrentListAdapter extends ArrayAdapter<String> {
                 percentageTV.setText(Common.ProgressForUiTruncated(percentage) + "%");
             }
 
-            row.setBackgroundColor(getContext().getResources().getColor(R.color.background)); //default color
+//            row.setBackgroundColor(getContext().getResources().getColor(R.color.background)); //default color
 
             if (mSelection.contains(position)&&isInActionMode) {
-                row.setBackgroundColor(getContext().getResources().getColor(R.color.accent));// this is a selected position so make it blue
+//                row.setBackgroundColor(getContext().getResources().getColor(R.color.accent));// this is a selected position so make it blue
+                row.setActivated(true);
+            }else{
+                row.setActivated(false);
             }
         } else {
 
