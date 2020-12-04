@@ -620,7 +620,11 @@
              // Phones handle just one fragment
 
              // Create an instance of ItemsFragments
-             firstFragment = (ItemstFragment) getSupportFragmentManager().findFragmentByTag("firstFragment");
+             try {
+                 firstFragment = (ItemstFragment) getSupportFragmentManager().findFragmentByTag("firstFragment");
+             }catch(ClassCastException ignored){
+
+             }
              if (firstFragment == null) {
                  firstFragment = new com.lgallardo.qbittorrentclient.ItemstFragment();
              }
