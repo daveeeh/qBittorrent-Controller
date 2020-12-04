@@ -30,6 +30,7 @@ class TorrentListAdapter extends ArrayAdapter<String> {
     private String[] torrentsNames;
     private Torrent[] torrentsData;
     private Context context;
+    public boolean isInActionMode;
 
     public TorrentListAdapter(Context context){
         super(context, R.layout.row, R.id.name);
@@ -124,7 +125,7 @@ class TorrentListAdapter extends ArrayAdapter<String> {
 
             row.setBackgroundColor(getContext().getResources().getColor(R.color.background)); //default color
 
-            if (mSelection.contains(position)) {
+            if (mSelection.contains(position)&&isInActionMode) {
                 row.setBackgroundColor(getContext().getResources().getColor(R.color.accent));// this is a selected position so make it blue
             }
         } else {
@@ -162,6 +163,15 @@ class TorrentListAdapter extends ArrayAdapter<String> {
             mSelection.add(position);
         }else
             mSelection.remove(position);
+        notifyDataSetChanged();
+    }
+
+    public void toggleSelection(Integer position){
+        if(mSelection.contains(position)){
+            mSelection.remove(position);
+        }else{
+            mSelection.add(position);
+        }
         notifyDataSetChanged();
     }
 

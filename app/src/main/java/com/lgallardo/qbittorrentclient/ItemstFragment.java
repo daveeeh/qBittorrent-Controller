@@ -114,7 +114,7 @@ public class ItemstFragment extends ListFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("isInActionMode", mActionMode!=null);
+        outState.putBoolean("isInActionMode", isInActionMode);
         if(myadapter!=null) {
             outState.putSerializable("selectedIds", myadapter.mSelection);
         }
@@ -152,6 +152,7 @@ public class ItemstFragment extends ListFragment {
 
             mActionMode = actionMode;
             mActionMode.setTitle(String.valueOf(myadapter.mSelection.size()));
+            isInActionMode = true;
 
             return true;
 
@@ -499,7 +500,10 @@ public class ItemstFragment extends ListFragment {
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
             mActionMode = null;
+            isInActionMode = false;
             mSwipeRefreshLayout.setEnabled(true);
+            myadapter.isInActionMode=false;
+            myadapter.notifyDataSetChanged();
         }
     };
 
@@ -507,36 +511,56 @@ public class ItemstFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        try {
+//        try {
 
-            getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+//            getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 
             // Get adapter
-            getListView().setMultiChoiceModeListener(multiChoicModeListener);
+//            getListView().setMultiChoiceModeListener(multiChoicModeListener);
+        if(isInActionMode) {
+            getActivity().startActionMode(multiChoicModeListener);
+            myadapter.isInActionMode = true;
+        }
 
             getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-
-                    if(MainActivity.listViewRefreshing) {
-                        return true;
+                    if(!isInActionMode){
+                        myadapter.clearSelection();
+                        myadapter.isInActionMode=true;
+                        myadapter.setSelection(position, true);
+                        getActivity().startActionMode(multiChoicModeListener);
                     }
-                    getListView().setItemChecked(position, !myadapter.isPositionChecked(position));
-                    return false;
+                    return true;
                 }
             });
 
-        } catch (Exception e) {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_NONE);
-        }
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(isInActionMode){
+                    myadapter.toggleSelection(position);
+                    if(mActionMode!=null)
+                        mActionMode.setTitle(String.valueOf(myadapter.mSelection.size()));
+                    if(myadapter.mSelection.size()==0&&mActionMode!=null)
+                        mActionMode.finish();
+                }else{
+                    ListItemClicked(position);
+                }
+            }
+        });
+
+//        } catch (Exception e) {
+//            getListView().setChoiceMode(ListView.CHOICE_MODE_NONE);
+//        }
     }
 
-    @Override
-    public void onListItemClick(ListView parent, View v, int position, long id) {
-        if(!MainActivity.listViewRefreshing) {
-            ListItemClicked(position);
-        }
-    }
+//    @Override
+//    public void onListItemClick(ListView parent, View v, int position, long id) {
+//        if(!MainActivity.listViewRefreshing) {
+//            ListItemClicked(position);
+//        }
+//    }
 
     public void ListItemClicked(int position) {
 
