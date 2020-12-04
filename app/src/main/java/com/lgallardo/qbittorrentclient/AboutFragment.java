@@ -54,7 +54,7 @@ public class AboutFragment extends Fragment {
 //            getActivity().getTheme().resolveAttribute(androidx.appcompat.appcompat.R.attr.actionBarSize, typed_value, true);
 //            mSwipeRefreshLayout.setProgressViewOffset(false, 0, getResources().getDimensionPixelSize(typed_value.resourceId) * 2);
 
-            mSwipeRefreshLayout.setColorSchemeColors(R.color.primary, R.color.primary_dark, R.color.primary_text);
+//            mSwipeRefreshLayout.setColorSchemeColors(R.color.primary, R.color.primary_dark, R.color.primary_text);
 
             if(!MainActivity.hostname.equals("")) {
                 mSwipeRefreshLayout.setRefreshing(true);
