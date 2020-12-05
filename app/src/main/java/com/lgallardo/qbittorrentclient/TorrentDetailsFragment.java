@@ -23,6 +23,7 @@ import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -269,6 +270,7 @@ public class TorrentDetailsFragment extends Fragment {
 
             }
 
+            ImageView statusImageView = (ImageView) rootView.findViewById(R.id.statusIcon);
             TextView nameTextView = (TextView) rootView.findViewById(R.id.torrentName);
             TextView sizeTextView = (TextView) rootView.findViewById(R.id.torrentSize);
             TextView ratioTextView = (TextView) rootView.findViewById(R.id.torrentRatio);
@@ -342,39 +344,39 @@ public class TorrentDetailsFragment extends Fragment {
                 uploadSpeedTextView.setText(uploadSpeed);
             }
 
-            nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_action_recheck, 0, 0, 0);
+            statusImageView.setImageResource(R.drawable.ic_action_recheck);
 
             // Set status icon
             if ("pausedUP".equals(state) || "pausedDL".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.paused, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.paused);
             }
 
             if ("stalledUP".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.stalledup, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.stalledup);
             }
 
             if ("stalledDL".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.stalleddl, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.stalleddl);
             }
 
             if ("downloading".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.downloading, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.downloading);
             }
 
             if ("uploading".equals(state) || "forcedUP".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.uploading, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.uploading);
             }
 
             if ("queuedDL".equals(state) || "queuedUP".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.queued, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.queued);
             }
 
             if ("checkingDL".equals(state) || "checkingUP".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_action_recheck, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.ic_action_recheck);
             }
 
             if ("error".equals(state) || "missingFiles".equals(state) || "unknown".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.error, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.error);
             }
 
 
@@ -806,6 +808,7 @@ public class TorrentDetailsFragment extends Fragment {
 
             View rootView = detailsFragment.getView();
 
+            ImageView statusImageView = (ImageView) rootView.findViewById(R.id.statusIcon);
             TextView nameTextView = (TextView) rootView.findViewById(R.id.torrentName);
             TextView sizeTextView = (TextView) rootView.findViewById(R.id.torrentSize);
             TextView ratioTextView = (TextView) rootView.findViewById(R.id.torrentRatio);
@@ -888,38 +891,38 @@ public class TorrentDetailsFragment extends Fragment {
             }
 
 
-            nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_action_recheck, 0, 0, 0);
+            statusImageView.setImageResource(R.drawable.ic_action_recheck);
 
             if ("pausedUP".equals(state) || "pausedDL".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.paused, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.paused);
             }
 
             if ("stalledUP".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.stalledup, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.stalledup);
             }
 
             if ("stalledDL".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.stalleddl, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.stalleddl);
             }
 
             if ("downloading".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.downloading, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.downloading);
             }
 
             if ("uploading".equals(state) || "forcedUP".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.uploading, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.uploading);
             }
 
             if ("queuedDL".equals(state) || "queuedUP".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.queued, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.queued);
             }
 
             if ("checkingDL".equals(state) || "checkingUP".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_action_recheck, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.ic_action_recheck);
             }
 
             if ("error".equals(state) || "missingFiles".equals(state) || "unknown".equals(state)) {
-                nameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.error, 0, 0, 0);
+                statusImageView.setImageResource(R.drawable.error);
             }
 
 
