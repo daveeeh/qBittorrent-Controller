@@ -902,6 +902,7 @@
          if (v.getId() == R.id.RecyclerViewContentFiles) {
 
              getMenuInflater().inflate(R.menu.menu_file_contextual, menu);
+             menu.setHeaderTitle("Set priority");
          }
 
 
