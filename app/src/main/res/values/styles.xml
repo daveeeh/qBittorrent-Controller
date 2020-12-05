@@ -10,48 +10,26 @@
 -->
 <resources>
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-
-    <style name="AppTheme" parent="BaseAppTheme">
-
-    </style>
-
-    <style name="PreferenceTheme" parent="Theme.AppCompat.DayNight">
+    <style name="PreferenceTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/primary_dark</item>
     </style>
 
-    <style name="BaseAppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/primary_dark</item>
-
-        <!-- dropShadowBackground (for cardviews)-->
-        <item name="dropShadowBackground">@drawable/gmd_shadow_light</item>
 
         <!-- Overlay Contextual menu-->
         <item name="windowActionModeOverlay">true</item>
 
         <!-- Contextual menu style -->
         <item name="actionModeBackground">@color/primary_dark</item>
-<!--        <item name="actionModeStyle">@style/ContextualActionBar</item>-->
     </style>
 
     <!-- Toolbar theme -->
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-<!--        <item name="android:textColorPrimary">#fff4f4f4</item>-->
-
-    </style>
-
-    <!-- Contextual menu style -->
-    <style name="ContextualActionBar" parent="Widget.AppCompat.ActionMode">
-<!--        <item name="background">@color/primary_dark_material_light</item>-->
-<!--        <item name="titleTextStyle">@style/my_actionmode_title_style</item>-->
-<!--        <item name="background">@color/accent</item>-->
 
     </style>
 
