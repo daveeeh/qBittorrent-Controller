@@ -80,7 +80,9 @@
         android:progress="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/info" />
+        app:layout_constraintTop_toBottomOf="@id/info"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"/>
 
 
     <View
