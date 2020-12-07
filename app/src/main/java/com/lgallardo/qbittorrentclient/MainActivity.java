@@ -580,7 +580,11 @@
              // }
 
              // This fragment will hold the list of torrents
-             firstFragment = (ItemstFragment) getSupportFragmentManager().findFragmentByTag("firstFragment");
+             try {
+                 firstFragment = (ItemstFragment) getSupportFragmentManager().findFragmentByTag("firstFragment");
+             }catch(Exception ignored){
+
+             }
              if (firstFragment == null) {
                  firstFragment = new com.lgallardo.qbittorrentclient.ItemstFragment();
              }
