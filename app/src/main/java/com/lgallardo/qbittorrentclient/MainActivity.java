@@ -37,6 +37,7 @@
  import android.os.SystemClock;
  import android.preference.PreferenceManager;
  import android.provider.Settings;
+ import android.support.annotation.NonNull;
  import android.support.v4.app.ActivityCompat;
  import android.support.v4.content.ContextCompat;
  import android.support.v4.view.GravityCompat;
@@ -60,6 +61,7 @@
  import android.widget.AutoCompleteTextView;
  import android.widget.CheckBox;
  import android.widget.EditText;
+ import android.widget.Filter;
  import android.widget.LinearLayout;
  import android.widget.ListView;
  import android.widget.TextView;
@@ -4210,7 +4212,9 @@
 
                  headerInfo = (LinearLayout) findViewById(R.id.header);
 
-                 if (header) {
+                 boolean detailsFragment = findViewById(R.id.details_refresh_layout)!=null && findViewById(R.id.activity_main_swipe_refresh_layout)==null;
+
+                 if (header&!detailsFragment) {
                      headerInfo.setVisibility(View.VISIBLE);
                  } else {
                      headerInfo.setVisibility(View.GONE);
@@ -4236,7 +4240,7 @@
                      }
                      // Tablets
                      else {
-                         downloadSpeedTextView.setText(Character.toString('\u21C5') + " " + Common.calculateSize("" + downloadSpeedCount) + "/s " + '\u2022' + " " + Common.calculateSize(transferInfo.getUp_info_data()) + " (" + downloadCount + ") " + '\u2022' + " Free: " + freeSpaceOnDisk);
+                         downloadSpeedTextView.setText(Character.toString('\u21C5') + " " + Common.calculateSize("" + downloadSpeedCount) + "/s " + '\u2022' + " " + Common.calculateSize(transferInfo.getDl_info_data()) + " (" + downloadCount + ") " + '\u2022' + " Free: " + freeSpaceOnDisk);
                      }
                  }
 
@@ -6268,14 +6272,63 @@
 
              // Load history for path and category autocomplete text field
 
+             class ContainsArrayAdapter extends ArrayAdapter<String> {
+
+                 ArrayList<String> mPaths;
+                 Filter mFilter;
+
+                 public ContainsArrayAdapter(@NonNull Context context, int resource, @NonNull ArrayList<String> objects) {
+                     super(context, resource, objects);
+                     mPaths = new ArrayList<>(objects);
+                 }
+
+                 @Override
+                 public Filter getFilter() {
+                     if (null == mFilter) {
+                         mFilter = new Filter() {
+                             @Override
+                             protected Filter.FilterResults performFiltering(CharSequence charSequence) {
+                                 List<String> listOfMatches = new ArrayList<String>();
+                                 if(charSequence != null) {
+                                     for (int i = 0; i < mPaths.size(); i++) {
+                                         String item = mPaths.get(i);
+                                         if (item != null && item.contains(charSequence)) {
+                                             listOfMatches.add(item);
+                                         }
+                                     }
+                                 }
+                                 Filter.FilterResults results = new Filter.FilterResults();
+                                 synchronized(this) {
+                                     results.values = listOfMatches;
+                                     results.count = listOfMatches.size();
+                                 }
+                                 return results;
+                             }
+
+                             @Override
+                             protected void publishResults(CharSequence charSequence, Filter.FilterResults filterResults) {
+                                 clear();
+                                 if (filterResults.count == 0) {
+                                     notifyDataSetInvalidated();
+                                 } else {
+                                     addAll((ArrayList<String>)filterResults.values);
+                                     notifyDataSetChanged();
+                                 }
+                             }
+                         };
+                     }
+                     return mFilter;
+                 }
+             }
+
              // Path
-             ArrayAdapter<String> pathAdapter = new ArrayAdapter<String>(
-                     this, android.R.layout.simple_list_item_1, path_history.toArray(new String[path_history.size()]));
+             ArrayAdapter<String> pathAdapter = new ContainsArrayAdapter (
+                     this, android.R.layout.simple_list_item_1, new ArrayList<String>(path_history));
              pathTextView.setAdapter(pathAdapter);
 
              // Category
-             ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(
-                     this, android.R.layout.simple_list_item_1, category_history.toArray(new String[category_history.size()]));
+             ArrayAdapter<String> categoryAdapter = new ContainsArrayAdapter (
+                     this, android.R.layout.simple_list_item_1, new ArrayList<String>(category_history));
              categoryTextView.setAdapter(categoryAdapter);
 
              // Checkbox value
